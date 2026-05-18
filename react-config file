@@ -1,0 +1,34 @@
+server {
+    listen 80;
+    server_name gopanoptica.com www.gopanoptica.com;
+ 
+    return 301 http://www.gopanoptica.com$request_uri;
+}
+ 
+server {
+    listen 80;
+    server_name www.YOUR_DOMAIN_NAME;
+ 
+    root /var/www/gopanoptica.com/dist;
+ 
+    access_log /var/log/nginx/YOUR_DOMAIN_NAME-access.log;
+    error_log /var/log/nginx/YOUR_DOMAIN_NAME-error.log;
+ 
+    client_max_body_size 100M;
+ 
+    location / {
+        try_files $uri $uri/ /index.html =404;
+    }
+ 
+    location ~* \.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|otf|json)$ {
+        expires 1y;
+        access_log off;
+    }
+ 
+    location = /healthz {
+        return 200 'ok';
+        add_header Content-Type text/plain;
+    }
+ 
+    error_page 404 /404.html;
+}
